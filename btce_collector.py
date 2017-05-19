@@ -10,7 +10,11 @@
 #
 # Initial created: 2017-05-11 10:46:11
 #
+<<<<<<< HEAD
 # Last   modified: 2017-05-18 14:49:33
+=======
+# Last   modified: 2017-05-12 14:49:48
+>>>>>>> 2ddd5f301d07968a902fb84f0b33b2653e0e6575
 #
 #
 #
@@ -26,6 +30,7 @@
 import time
 import decimal
 import sqlite3
+import head
 import btceAPI.public as bp
 
 #%% convert before insert into sqlite
@@ -88,7 +93,7 @@ def getSqliteInfo(dbName):
 #%% build connection
 my_pair = ['btc_usd','ltc_usd','eth_usd','ltc_btc','eth_btc']
 dbName = 'btce'
-dir_SQL = '/home/yiyusheng/Data/Trade_Visualization/'
+#dir_SQL = '/home/yiyusheng/Data/Trade_Visualization/'
 
 #dropSqlite(dbName)                                           
 createSqlite(dbName)
