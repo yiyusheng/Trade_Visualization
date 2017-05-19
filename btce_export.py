@@ -10,19 +10,20 @@
 #
 # Initial created: 2017-05-11 10:46:11
 #
-# Last   modified: 2017-05-14 09:45:09
+# Last   modified: 2017-05-19 12:44:44
 #
 #
 #
 
-import numpy as np
-import pandas as pd
-import btceAPI.common as bc
 import time
 import decimal
 import sqlite3
 import head
+import os
 import btceAPI.public as bp
+import btceAPI.common as bc
+import numpy as np
+import pandas as pd
 
 #%% convert before insert into sqlite
 def adapt_decimal(d):
@@ -51,5 +52,5 @@ def exportDB(dbName):
 #%% build connection
 my_pair = ['btc_usd','ltc_usd','eth_usd','ltc_btc','eth_btc']
 dbName = 'btce'
-dir_SQL = '/Users/york/Data/Trade_Visualization/'
+dir_SQL = os.path.expanduser('~')+'/Data/Trade_Visualization/'
 DT = exportDB('btce')
