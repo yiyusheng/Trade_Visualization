@@ -10,11 +10,7 @@
 #
 # Initial created: 2017-05-11 10:46:11
 #
-<<<<<<< HEAD
-# Last   modified: 2017-05-18 14:49:33
-=======
-# Last   modified: 2017-05-12 14:49:48
->>>>>>> 2ddd5f301d07968a902fb84f0b33b2653e0e6575
+# Last   modified: 2017-05-19 14:34:48
 #
 #
 #

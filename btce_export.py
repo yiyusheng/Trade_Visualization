@@ -10,7 +10,7 @@
 #
 # Initial created: 2017-05-11 10:46:11
 #
-# Last   modified: 2017-05-19 12:44:44
+# Last   modified: 2017-05-19 12:50:24
 #
 #
 #
@@ -42,7 +42,7 @@ def exportDB(dbName):
     r = cur.execute('select * from btce_tradeHistory')
     r = r.fetchall()
     DT = pd.DataFrame(r)
-    with open(dir_SQL+dbName+'.csv', "a") as f:
+    with open(dir_SQL+dbName+'.csv', "wb") as f:
         DT.to_csv(f)
     cur.close()
     conn.close()
