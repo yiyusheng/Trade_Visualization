@@ -10,7 +10,7 @@
 #
 # Initial created: 2017-05-11 10:46:11
 #
-# Last   modified: 2017-05-12 09:41:58
+# Last   modified: 2017-05-18 14:49:33
 #
 #
 #
@@ -62,13 +62,16 @@ def dropSqlite(dbName):
     
 #%% getTradeHistory per hours
 def getPerhour(pair, dbName, lmt=5000):
-    history = bp.getTradeHistory(pair, lmt = lmt)
-    conn = sqlite3.connect(dir_SQL+dbName+".sqlite", detect_types=sqlite3.PARSE_DECLTYPES)
-    cur = conn.cursor()
-    cur.executemany('insert or ignore into btce_tradeHistory values(?,?,?,?,?,?)',history)
-    conn.commit()
-    cur.close()
-    conn.close()
+    try:
+        history = bp.getTradeHistory(pair, lmt = lmt)
+        conn = sqlite3.connect(dir_SQL+dbName+".sqlite", detect_types=sqlite3.PARSE_DECLTYPES)
+        cur = conn.cursor()
+        cur.executemany('insert or ignore into btce_tradeHistory values(?,?,?,?,?,?)',history)
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception,e:
+        print('[%s]\tException:%s' %(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())),e))
         
 #%% get sqlite infomation
 def getSqliteInfo(dbName):
@@ -91,5 +94,3 @@ dir_SQL = '/home/yiyusheng/Data/Trade_Visualization/'
 createSqlite(dbName)
 [getPerhour(p,dbName = dbName) for p in my_pair]
 getSqliteInfo(dbName)
-
-
