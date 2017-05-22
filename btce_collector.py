@@ -10,18 +10,10 @@
 #
 # Initial created: 2017-05-11 10:46:11
 #
-# Last   modified: 2017-05-19 14:37:12
+# Last   modified: 2017-05-22 15:37:08
 #
 #
 #
-
-#import btceapi
-#import sys
-#import pylab
-#import json
-#import numpy as np
-#import pandas as pd
-#import btceAPI.common as bc
 
 import time
 import decimal
@@ -41,58 +33,63 @@ sqlite3.register_adapter(decimal.Decimal,adapt_decimal)
 sqlite3.register_converter('decimal', convert_decimal)
 
 #%% create sqlite database
-def createSqlite(dbName):
+def createSqlite(dbName,tbName):
     conn = sqlite3.connect(dir_SQL+dbName+".sqlite")
     cur = conn.cursor()
-    cur.execute('''create table if not exists '''+dbName+'''_tradeHistory
+    cur.execute('''create table if not exists '''+tbName+'''
              (pair text,
               type text,
               price decimal,
               tid decimal primary key,
               amount decimal,
-              timestamp decimal)''')
+              timestamp decimal,
+              create_time text)''')
     cur.close()
     conn.close()
 
 #%% drop sqlite database
-def dropSqlite(dbName):
+def dropSqlite(dbName,tbName):
     conn = sqlite3.connect(dir_SQL+dbName+".sqlite")
     cur = conn.cursor()    
-    cur.execute('drop table if exists '+dbName+'_tradeHistory')
+    cur.execute('drop table if exists '+tbName)
     cur.close()
     conn.close()
     
+#%% get sqlite infomation
+def getSqliteInfo(dbName,tbName):
+    conn = sqlite3.connect(dir_SQL+dbName+".sqlite")
+    cur = conn.cursor()
+    a = cur.execute('select count(*) from '+tbName+' group by pair')
+    a = a.fetchall()
+    su = a[0][0] + a[1][0] + a[2][0] + a[3][0] + a[4][0]
+    print('[%s][sqlite-%s]\tbu:%d\tlu:%d\tlb:%d\teu:%d\teb:%d\ttotal:%d' %(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())),dbName,a[0][0],a[4][0],a[3][0],a[2][0],a[1][0],su))
+    cur.close()
+    conn.close()
+
 #%% getTradeHistory per hours
-def getPerhour(pair, dbName, lmt=5000):
+def getPerhour(pair, dbName, tbName, t, lmt=5000):
     try:
         history = bp.getTradeHistory(pair, lmt = lmt)
         conn = sqlite3.connect(dir_SQL+dbName+".sqlite", detect_types=sqlite3.PARSE_DECLTYPES)
         cur = conn.cursor()
-        cur.executemany('insert or ignore into btce_tradeHistory values(?,?,?,?,?,?)',history)
-        conn.commit()
+        for h in history:
+            cur.execute('insert or ignore into '+tbName+' values(?,?,?,?,?,?,?)',list(h) + [t])
+            conn.commit()
         cur.close()
         conn.close()
+        return(1)
     except Exception,e:
         print('[%s]\tException:%s' %(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())),e))
+        return(0)
         
-#%% get sqlite infomation
-def getSqliteInfo(dbName):
-    conn = sqlite3.connect(dir_SQL+dbName+".sqlite")
-    cur = conn.cursor()
-    a = cur.execute('select count(*) from btce_tradeHistory')
-    a = a.fetchall()
-    print('[%s] %d items in sqlite-%s' %(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())),a[0][0],dbName))
-    cur.close()
-    conn.close()
-    return(a[0][0])    
-
-
 #%% build connection
 my_pair = ['btc_usd','ltc_usd','eth_usd','ltc_btc','eth_btc']
 dbName = 'btce'
-dir_SQL = os.path.expanduser('~')+'/Data/Trade_Visualization/'                 
+tbName = 'btce'
+dir_SQL = os.path.expanduser('~')+'/Data/Trade_Visualization/'
+t = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
 
-#dropSqlite(dbName)                                           
-createSqlite(dbName)
-[getPerhour(p,dbName = dbName) for p in my_pair]
-getSqliteInfo(dbName)
+#dropSqlite(dbName,tbName)                                           
+createSqlite(dbName,tbName)
+[getPerhour(p,dbName,tbName,t,5000) for p in my_pair]
+getSqliteInfo(dbName,tbName)
