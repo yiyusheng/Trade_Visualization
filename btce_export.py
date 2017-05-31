@@ -10,7 +10,7 @@
 #
 # Initial created: 2017-05-11 10:46:11
 #
-# Last   modified: 2017-05-19 15:50:34
+# Last   modified: 2017-05-24 15:50:03
 #
 #
 #
@@ -18,10 +18,7 @@
 import time
 import decimal
 import sqlite3
-#import head
 import os
-#import btceAPI.public as bp
-#import btceAPI.common as bc
 import numpy as np
 import pandas as pd
 
@@ -36,23 +33,23 @@ sqlite3.register_adapter(decimal.Decimal,adapt_decimal)
 sqlite3.register_converter('decimal', convert_decimal)
 
 #%% export sqlite infomation
-def exportDB(dbName):
+def exportDB(dbName,tbName):
     conn = sqlite3.connect(dir_SQL+dbName+".sqlite")
     cur = conn.cursor()
-    r = cur.execute('select * from btce_tradeHistory')
+    r = cur.execute('select * from '+tbName)
     r = r.fetchall()
     DT = pd.DataFrame(r)
-    with open(dir_SQL+dbName+'.csv', "wb") as f:
+    with open(dir_SQL+tbName+'.csv', "wb") as f:
         DT.to_csv(f)
     cur.close()
     conn.close()
     return(DT)    
 
 #%% load sqlite infomation
-def loadDB(dbName):
+def loadDB(dbName,tbName):
     conn = sqlite3.connect(dir_SQL+dbName+".sqlite")
     cur = conn.cursor()
-    r = cur.execute('select * from btce_tradeHistory')
+    r = cur.execute('select * from '+tbName)
     r = r.fetchall()
 #    DT = pd.DataFrame(r)
     DT = r
@@ -61,6 +58,6 @@ def loadDB(dbName):
     return(DT)    
 
 #%% build connection
-dbName = 'btce'
 dir_SQL = os.path.expanduser('~')+'/Data/Trade_Visualization/'
-DT = loadDB('btce')
+DT = loadDB('btce','btce')
+#DT_old = loadDB('btce','btce_tradeHistory')

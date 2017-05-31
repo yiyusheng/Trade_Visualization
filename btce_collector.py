@@ -10,7 +10,7 @@
 #
 # Initial created: 2017-05-11 10:46:11
 #
-# Last   modified: 2017-05-22 15:37:08
+# Last   modified: 2017-05-22 17:48:15
 #
 #
 #
@@ -86,7 +86,8 @@ def getPerhour(pair, dbName, tbName, t, lmt=5000):
 my_pair = ['btc_usd','ltc_usd','eth_usd','ltc_btc','eth_btc']
 dbName = 'btce'
 tbName = 'btce'
-dir_SQL = os.path.expanduser('~')+'/Data/Trade_Visualization/'
+dir_SQL = '/home/yiyusheng/Data/Trade_Visualization/'
+#dir_SQL = os.path.expanduser('~')+'/Data/Trade_Visualization/'
 t = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
 
 #dropSqlite(dbName,tbName)                                           
